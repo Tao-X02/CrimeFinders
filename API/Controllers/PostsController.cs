@@ -16,32 +16,32 @@ namespace API.Controllers
         [HttpGet] // List of all posts
         public async Task<ActionResult<List<Post>>> GetPosts()
         {
-            return await Mediator.Send(new List.Query());
+            return HandleResult(await Mediator.Send(new List.Query()));
         }
 
         [HttpGet("{id}")] // Get post by ID
-        public async Task<ActionResult<Post>> GetPost(Guid id) 
+        public async Task<IActionResult> GetPost(Guid id) 
         {
-            return await Mediator.Send(new Details.Query{Id = id});
+            return HandleResult(await Mediator.Send(new Details.Query{Id = id}));
         }
 
         [HttpPost] // Create new post
         public async Task<IActionResult> CreatePost(Post newPost)
         {
-            return Ok(await Mediator.Send(new Create.Command {Post = newPost}));
+            return HandleResult(await Mediator.Send(new Create.Command {Post = newPost}));
         }
 
         [HttpPut("{id}")] // Update existing post
         public async Task<IActionResult> UpdatePost(Guid id, Post newPost)
         {
             newPost.Id = id;
-            return Ok(await Mediator.Send(new Update.Command{Post = newPost}));
+            return HandleResult(await Mediator.Send(new Update.Command{Post = newPost}));
         }
 
         [HttpDelete("{id}")] // Delete a post
         public async Task<IActionResult> DeletePost(Guid id)
         {
-            return Ok(await Mediator.Send(new Delete.Command{Id = id}));
+            return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
         }
     }
 }

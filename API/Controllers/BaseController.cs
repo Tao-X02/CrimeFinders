@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,8 +16,18 @@ namespace API.Controllers
     {
         // Inject mediator into controller
         private IMediator _mediator;
-        // Available to derived controllers
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices
-            .GetService<IMediator>();
+            .GetService<IMediator>(); // Available to all derived controllers
+
+        // Handle result success/errors
+        protected ActionResult HandleResult<T>(Result<T> result)
+        {
+            if (result == null) return NotFound();
+            if (result.IsSuccess && result.Value != null)
+                return Ok(result.Value);
+            if (result.IsSuccess && result.Value == null)
+                return NotFound();
+            return BadRequest(result.Error);
+        }
     }
 }

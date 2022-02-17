@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,11 +12,11 @@ namespace Application.Posts
 {
     public class List
     {
-        // Query that returns list of Events
-        public class Query : IRequest<List<Post>> {}
+        // Query that returns list of posts
+        public class Query : IRequest<Result<List<Post>>> {}
 
         // Handler for returning list
-        public class Handler : IRequestHandler<Query, List<Post>>
+        public class Handler : IRequestHandler<Query, Result<List<Post>>>
         {
             // Constructor
             private readonly DataContext _context;
@@ -25,9 +26,9 @@ namespace Application.Posts
             }
             
             // Handle method
-            public async Task<List<Post>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Post>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.allPosts.ToListAsync(cancellationToken);
+                return Result<List<Post>>.Success(await _context.allPosts.ToListAsync(cancellationToken));
             }
         }
     }
