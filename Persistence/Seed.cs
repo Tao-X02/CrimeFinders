@@ -3,18 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain;
+using Microsoft.AspNetCore.Identity;
 
 namespace Persistence
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context)
+        public static async Task SeedData(DataContext context, UserManager<WebUser> userManager)
         {
-            // Check if there's any post already in database
-            if (context.allPosts.Any()) 
+            // Check if there's no user already in database
+            if (!userManager.Users.Any())
             {
-                return;
+                // Create new list of users
+                var users = new List<WebUser>
+                {
+                    new WebUser{
+                        ScreeName = "Sample",
+                        UserName = "Sample",
+                        Email = "sample@test.com"
+                    },
+                    new WebUser{
+                        ScreeName = "Tao",
+                        UserName = "TaoX02",
+                        Email = "taoguangxing@gmail.com"
+                    },
+                    new WebUser{
+                        ScreeName = "Test",
+                        UserName = "Test1",
+                        Email = "test@gmail.com"
+                    }
+                };
+
+                // Create passowrd for each user
+                foreach (var user in users)
+                {
+                    await userManager.CreateAsync(user, "Example_1");
+                }
             }
+
+            // Check if there's any post already in database
+            if (context.allPosts.Any()) return;
 
             // Create new list of posts
             var posts = new List<Post>
