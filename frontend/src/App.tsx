@@ -1,10 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './Pages/home';
-import Dashboard from './Pages/dashboard';
+import Dashboard from './Pages/Dashboard/dashboard';
 import SignUp from './Pages/signup';
+import Submit from './Pages/submit';
+import Profile from './Pages/profile';
+import Submit2 from './Pages/submit2';
 
 function App() {
   return (
@@ -13,6 +15,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard /> } />
         <Route path="/signup" element={<SignUp /> } />
+        <Route path="/submit" element={<Submit />} />
+        <Route path="/submit-final" element={<Submit2 />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );
