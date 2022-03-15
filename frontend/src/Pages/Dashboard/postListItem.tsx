@@ -34,7 +34,7 @@ export default function PostListItem({ post }: Props) {
             />
             <CardContent sx={{ marginTop: '-2%' }}>
                 <Typography gutterBottom variant="h5" component="div">{post.city}, {post.region}</Typography>
-                <Typography gutterBottom variant="body2" component="div">{post.location}</Typography>
+                <Typography gutterBottom variant="body1" component="div">{post.location}</Typography>
                 <Typography variant="body2" color="text.secondary">
                     Description: {post.description.substring(0, 100)}
                     {post.description.length > 100 && "..."}
@@ -47,12 +47,12 @@ export default function PostListItem({ post }: Props) {
                 alt="Placeholder image"
             />
             <CardActions>
-                <Button variant="outlined">Comments</Button>
+                <Button href={`/dashboard/${post.id}`} variant="outlined">Comments</Button>
                 <Grid container justifyContent="flex-end">
                     <Button variant="contained" color="success" size="small">Join</Button>
                 </Grid>
                 <Grid>
-                    <Button variant="contained" color="primary" size="small">View</Button>
+                    <Button href={`/dashboard/${post.id}`} variant="contained" color="primary" size="small">View</Button>
                 </Grid>
             </CardActions>
         </Card>

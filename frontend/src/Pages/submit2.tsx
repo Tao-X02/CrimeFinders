@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo, useState } from 'react'
 import NavBar from '../Components/navBar'
 import SideBar from '../Components/sideBar'
 import Avatar from '@mui/material/Avatar';
@@ -9,8 +9,75 @@ import Box from '@mui/material/Box';
 import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { useDropzone } from 'react-dropzone';
+
+const baseStyle = {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '20px',
+    borderWidth: 2,
+    borderRadius: 2,
+    borderColor: '#eeeeee',
+    borderStyle: 'dashed',
+    backgroundColor: '#fafafa',
+    color: '#bdbdbd',
+    outline: 'none',
+    transition: 'border .24s ease-in-out'
+};
+
+const focusedStyle = {
+    borderColor: '#2196f3'
+};
+
+const acceptStyle = {
+    borderColor: '#00e676'
+};
+
+const rejectStyle = {
+    borderColor: '#ff1744'
+};
 
 export default function Submit2() {
+    const [files, setFiles] = useState([]);
+
+    const {
+        getRootProps,
+        getInputProps,
+        isFocused,
+        isDragAccept,
+        isDragReject
+    } = useDropzone({
+        accept: "image/*",
+        onDrop: (acceptedFiles: any) => {
+            setFiles(
+                acceptedFiles.map((file: any) => Object.assign(FileReader, {
+                    preview: URL.createObjectURL(file)
+                }))
+            )
+        }
+    });
+
+    const style = useMemo(() => ({
+        ...baseStyle,
+        ...(isFocused ? focusedStyle : {}),
+        ...(isDragAccept ? acceptStyle : {}),
+        ...(isDragReject ? rejectStyle : {})
+    }), [
+        isFocused,
+        isDragAccept,
+        isDragReject
+    ]);
+
+    const images = files.map((file: any) => (
+        <div key={file.name}>
+            <div>
+                <img src={file.preview} style={{ width: '450px' }} alt="preview" />
+            </div>
+        </div>
+    ))
+
     return (
         <Box style={{ display: 'flex', backgroundColor: '#f2f3f5', minHeight: '100vh' , alignItems: 'center', justifyContent: 'center' }}>
             <NavBar submit={true} />
@@ -40,6 +107,30 @@ export default function Submit2() {
                             rows={5}
                         />
                     </Grid>
+                    <div style={{ marginLeft: '3.2%', marginTop: '2%', width: '100%' }}>
+                        <div {...getRootProps()}>
+                            <input {...getInputProps({ ...style })} />
+                            <Box 
+                                style={{ 
+                                    flex: 1,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    padding: '20px',
+                                    borderWidth: 2,
+                                    borderRadius: 2,
+                                    borderColor: '#eeeeee',
+                                    borderStyle: 'dashed',
+                                    backgroundColor: '#fafafa',
+                                    outline: 'none',
+                                    transition: 'border .24s ease-in-out'
+                                }}
+                            >
+                                <Typography variant="subtitle1" color="secondary">Drop or select an image here</Typography>
+                            </Box>
+                        </div>
+                        <div>{images}</div>
+                    </div>
                     </Grid>
                     <Button
                         type="submit"
