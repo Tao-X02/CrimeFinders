@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Divider, Grid, Toolbar, Typography } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useStore } from '../../App/stores/store';
 import LoadingComponent from '../../Components/loadingComponent';
 import NavBar from '../../Components/navBar';
@@ -11,12 +11,21 @@ const drawerWidth = 300;
 
 export default observer(function PostDetails() {
     const {postStore} = useStore();
-    const {selectedPost: post, loadPost, loadingInitial} = postStore;
+    const {selectedPost: post, loadPost, loadingInitial, deletePost, loading} = postStore;
     const {id} = useParams<{id: string}>();
+
+    let navigate = useNavigate();
 
     useEffect(() => {
         if (id) loadPost(id);
     }, [id, loadPost])
+
+    const handleDelete = async () => {
+        if (id) {
+            await deletePost(id);
+            navigate(`/dashboard`, { replace: true });
+        }
+    }
 
     if (loadingInitial || !post) return <LoadingComponent />
 
@@ -44,7 +53,7 @@ export default observer(function PostDetails() {
                             </CardContent>
                             <Divider />
                             <CardActions>
-                                <Button variant="contained" color="error">Cancel</Button>
+                                <Button onClick={handleDelete} variant="contained" color="error">Delete</Button>
                                 <Grid container justifyContent="flex-end">
                                     <Button variant="contained" color="success">Join</Button>
                                 </Grid>

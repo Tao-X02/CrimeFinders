@@ -20,7 +20,7 @@ export default observer(function Dashboard() {
         postStore.loadPosts();
     }, [postStore])
 
-    if (postStore.loadingInitial) return <LoadingComponent />
+    if (postStore.loadingInitial || postStore.loading) return <LoadingComponent />
 
     return (
         <Box style={{ display: 'flex', backgroundColor: '#f2f3f5' }}>

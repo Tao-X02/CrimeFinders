@@ -36,8 +36,8 @@ export default function PostListItem({ post }: Props) {
                 <Typography gutterBottom variant="h5" component="div">{post.city}, {post.region}</Typography>
                 <Typography gutterBottom variant="body1" component="div">{post.location}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Description: {post.description.substring(0, 100)}
-                    {post.description.length > 100 && "..."}
+                    Description: {post.description.substring(0, 250).trim()}
+                    {post.description.length > 250 && "..."}
                 </Typography>
             </CardContent>
             <CardMedia

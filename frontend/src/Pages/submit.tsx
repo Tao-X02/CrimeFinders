@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import NavBar from '../Components/navBar'
 import SideBar from '../Components/sideBar'
 import Avatar from '@mui/material/Avatar';
@@ -10,17 +10,36 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Link, MenuItem } from '@mui/material';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../App/stores/store';
+import { useNavigate } from "react-router-dom";
 
 const types = ["Person of Interest", "Fugitive", "Missing Person"]
 
-export default function Submit() {
+export default observer(function Submit() {
+    const {postStore} = useStore();
+
+    const [type, setType] = useState("")
+
+    let navigate = useNavigate();
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-
-        });
+        let temp = {
+            type: type,
+            city: String(data.get('city')),
+            region: String(data.get('region')),
+            location: String(data.get('location')),
+            date: String(data.get('date'))
+        }
+        postStore.setSubmission1(temp);
+        navigate("/submit-final", { replace: true });
     };
+
+    const handleChangeType = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setType(event.target.value);
+      };
 
     return (
         <Box style={{ display: 'flex', backgroundColor: '#f2f3f5', minHeight: '100vh' , alignItems: 'center', justifyContent: 'center' }}>
@@ -44,8 +63,11 @@ export default function Submit() {
                     <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
+                            defaultValue=""
                             select
                             fullWidth
+                            value={type}
+                            onChange={handleChangeType}
                             label="Type"
                             helperText="Select Type"
                         >
@@ -72,7 +94,7 @@ export default function Submit() {
                         required
                         fullWidth
                         name="region"
-                        label="Region"
+                        label="Province/Territory"
                         type="region"
                         id="region"
                         autoComplete="region"
@@ -102,7 +124,7 @@ export default function Submit() {
                     </Grid>
                     </Grid>
                     <Button
-                        href="/submit-final"
+                        
                         type="submit"
                         fullWidth
                         variant="contained"
@@ -115,4 +137,4 @@ export default function Submit() {
             </Container>
         </Box>
     )
-}
+})

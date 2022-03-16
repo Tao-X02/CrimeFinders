@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import NavBar from '../Components/navBar'
 import SideBar from '../Components/sideBar'
 import Avatar from '@mui/material/Avatar';
@@ -10,6 +10,10 @@ import LibraryAddOutlinedIcon from '@mui/icons-material/LibraryAddOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useDropzone } from 'react-dropzone';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../App/stores/store';
+import { v4 as uuid } from 'uuid';
+import { useNavigate } from 'react-router-dom';
 
 const baseStyle = {
     flex: 1,
@@ -39,8 +43,33 @@ const rejectStyle = {
     borderColor: '#ff1744'
 };
 
-export default function Submit2() {
+export default observer(function Submit2() {
+    const {postStore} = useStore();
+
     const [files, setFiles] = useState([]);
+
+    let navigate = useNavigate();
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log(String(data.get('description')));
+
+        let newId = uuid();
+        let newPost = {
+            id: newId,
+            type: postStore.submit1?.type ? postStore.submit1?.type : "",
+            description: String(data.get('description')),
+            city: postStore.submit1?.city ? postStore.submit1?.city : "",
+            region: postStore.submit1?.region ? postStore.submit1?.region : "",
+            location: postStore.submit1?.location ? postStore.submit1?.location : "",
+            date: postStore.submit1?.date ? postStore.submit1?.date : ""
+        }
+
+        await postStore.createPost(newPost);
+        navigate(`/dashboard`, { replace: true });
+        navigate(`/dashboard/${newId}`, { replace: true });
+    };
 
     const {
         getRootProps,
@@ -96,12 +125,14 @@ export default function Submit2() {
                 <Typography component="h1" variant="h5">
                     Almost Ready!
                 </Typography>
-                <Box component="form" noValidate sx={{ mt: 3, width: 1 }}>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 3, width: 1 }}>
                     <Grid container spacing={2}>
                     <Grid item xs={12}>
                         <TextField
                             id="outlined-multiline-static"
+                            name="description"
                             label="Add Description"
+                            type="description"
                             multiline
                             fullWidth
                             rows={5}
@@ -145,4 +176,4 @@ export default function Submit2() {
             </Container>
         </Box>
     )
-}
+})

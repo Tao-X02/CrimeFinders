@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import agent from "../api/agent";
-import { Post } from "../models/post";
+import { Post, Submit1 } from "../models/post";
+import { v4 as uuid } from 'uuid';
 
 export default class PostStore {
     // Class variables
@@ -10,6 +11,7 @@ export default class PostStore {
     loading = false;
     loadingInitial = true;
     mobileOpen = false;
+    submit1: Submit1 | undefined = undefined;
 
     constructor() {
         makeAutoObservable(this)
@@ -60,6 +62,41 @@ export default class PostStore {
         }
     }
 
+    // Create post from form input
+    createPost = async(post: Post) => {
+        this.loading = true;
+        try {
+            await agent.Posts.create(post);
+            runInAction(() => {
+                this.postRegistry.set(post.id, post);
+                this.selectedPost = post;
+                this.loading = false;
+            })
+        } catch (error) {
+            console.log(error);
+            runInAction(() => {
+                this.loading = false;
+            })
+        }
+    }
+
+    // Delete post
+    deletePost = async (id: string) => {
+        this.loading = true;
+        try {
+            await agent.Posts.delete(id);
+            runInAction(() => {
+                this.postRegistry.delete(id);
+                this.loading = false;
+            })
+        } catch (error) {
+            console.log(error);
+            runInAction(() => {
+                this.loading = false;
+            })
+        }
+    }
+
     // Getter for post in registry
     private getPost = (id: string) => {
         return this.postRegistry.get(id);
@@ -88,5 +125,10 @@ export default class PostStore {
 
     selectPost = (id: string) => {
         this.selectedPost = this.postRegistry.get(id);
+    }
+
+    // Temporarily store info from submission form 1
+    setSubmission1 = (submission: Submit1) => {
+        this.submit1 = submission;
     }
 }
