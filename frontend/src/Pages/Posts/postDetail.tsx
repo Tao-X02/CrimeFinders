@@ -36,7 +36,7 @@ export default observer(function PostDetails() {
             <Box
                 component="main"
                 sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-                style={{ marginLeft: '2%' }}
+                style={{ marginLeft: '2%', marginBottom: '1%' }}
             >
                 <Toolbar />
                 <Grid container direction="row">
@@ -49,7 +49,12 @@ export default observer(function PostDetails() {
                                 alt="Placeholder image"
                             />
                             <CardContent>
-                                <Typography variant="body1" component="div">{post.description}</Typography>
+                                {post.description.split('\n').map((line: string, index) => (
+                                    <div key={index}>
+                                        {index % 2 === 1 && <br />}
+                                        <Typography variant="body1" component="div">{line}</Typography>
+                                    </div>
+                                ))}
                             </CardContent>
                             <Divider />
                             <CardActions>

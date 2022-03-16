@@ -9,10 +9,22 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
+import { BreakfastDiningOutlined } from '@mui/icons-material';
 
 // Define props interface
 interface Props {
     post: Post
+}
+
+function getType(post: Post) {
+    switch (post.type) {
+        case "Person of Interest":
+            return <Button variant="contained" color="warning" size="small">Person of Interest</Button>;
+        case "Fugitive":
+            return <Button variant="contained" color="success" size="small">Fugitive</Button>;
+        case "Missing Person":
+            return <Button variant="contained" color="error" size="small">Missing Person</Button>;
+    }
 }
 
 export default function PostListItem({ post }: Props) {
@@ -26,7 +38,7 @@ export default function PostListItem({ post }: Props) {
                 }
                 action={
                 <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                    <Button variant="contained" color="warning" size="small">Person of Interest</Button>
+                    {getType(post)}
                 </div>
                 }
                 title="Anonymous User submitted a tip"
@@ -49,7 +61,7 @@ export default function PostListItem({ post }: Props) {
             <CardActions>
                 <Button href={`/dashboard/${post.id}`} variant="outlined">Comments</Button>
                 <Grid container justifyContent="flex-end">
-                    <Button variant="contained" color="success" size="small">Join</Button>
+                    <Button variant="contained" color="success" size="small">Join Search</Button>
                 </Grid>
                 <Grid>
                     <Button href={`/dashboard/${post.id}`} variant="contained" color="primary" size="small">View</Button>

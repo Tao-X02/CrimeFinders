@@ -15,7 +15,7 @@ export default function Filter() {
                 </ListItemButton>
                 <Divider />
                 <ListItemButton>
-                    <ListItemText primary={"Tips I've joined"} />
+                    <ListItemText primary={"Tips I'm searching"} />
                 </ListItemButton>
                 <Divider />
                 <ListItemButton>
