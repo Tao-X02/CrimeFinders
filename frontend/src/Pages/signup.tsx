@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -12,6 +12,9 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../App/stores/store';
+import { useNavigate } from 'react-router-dom';
 
 function Copyright(props: any) {
   return (
@@ -28,17 +31,39 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default observer(function SignUp() {
+    const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const {userStore} = useStore();
+
+    let navigate = useNavigate();
+
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            firstName: data.get('firstName'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-            confirmPassword: data.get('confirmPassword')
-        });
+
+        if (data.get('password') != data.get('confirmPassword')) {
+            setShowError(true);
+            setErrorMessage("Passwords must match")
+        }
+
+        let signupInfo = {
+            firstName: String(data.get('firstName')),
+            lastName: String(data.get('lastName')),
+            email: String(data.get('email')),
+            password: String(data.get('password')),
+        }
+
+        userStore.signup(signupInfo)
+        .then(res => {
+            navigate('/dashboard');
+            setShowError(false);
+        })
+        .catch(err => {
+            setShowError(true);
+            setErrorMessage("Please check that all sections are complete. Email may have been taken.")
+        })
     };
 
     return (
@@ -109,7 +134,7 @@ export default function SignUp() {
                     fullWidth
                     name="confirmPassword"
                     label="Confirm Password"
-                    type="confirmPassword"
+                    type="password"
                     id="confirmPassword"
                     autoComplete="new-confirmPassword"
                     />
@@ -129,6 +154,7 @@ export default function SignUp() {
                 >
                 Sign Up
                 </Button>
+                {showError && <Typography variant="body1" color="red">*{errorMessage}</Typography>}
                 <Grid container justifyContent="flex-end">
                 <Grid item>
                     <Link href="/" variant="body2">
@@ -142,4 +168,4 @@ export default function SignUp() {
         </Container>
         </ThemeProvider>
     );
-}
+})

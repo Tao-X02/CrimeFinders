@@ -1,14 +1,17 @@
 import PostStore from "./postStore";
 import { createContext, useContext } from "react";
+import UserStore from "./userStore";
 
 // Define an interface
 interface Store {
-    postStore: PostStore
+    postStore: PostStore;
+    userStore: UserStore;
 }
 
 // Create a new instance for each store
 export const store: Store = {
-    postStore: new PostStore()
+    postStore: new PostStore(),
+    userStore: new UserStore()
 }
 
 // Create react context

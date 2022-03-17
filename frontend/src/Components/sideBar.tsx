@@ -16,6 +16,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import PersonIcon from '@mui/icons-material/Person';
 import BackupIcon from '@mui/icons-material/Backup';
 import Link from '@mui/material/Link';
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 300;
 
@@ -25,10 +26,13 @@ interface Props {
     current?: string;
 }
 
+
 export default observer(function SideBar(props: Props) {
-    const {postStore} = useStore();
+    const {postStore, userStore} = useStore();
 
     const { window, current } = props;
+
+    let navigate = useNavigate();
 
     const drawer = (
         <div>
@@ -77,7 +81,12 @@ export default observer(function SideBar(props: Props) {
         </div>
         <Divider />
         <List>
-            <ListItemButton>
+            <ListItemButton 
+                onClick={() => {
+                    userStore.logout();
+                    navigate('/');
+                }}
+            >
                 <ListItemIcon>
                     <ExitToAppIcon />
                 </ListItemIcon>

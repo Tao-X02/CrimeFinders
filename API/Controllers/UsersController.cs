@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using API.DTOs;
-using API.Extensions;
 using API.Services;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -96,7 +92,8 @@ namespace API.Controllers
         }
 
         // Get current user
-        [HttpGet]
+        [Authorize]
+        [HttpGet("current")]
         public async Task<ActionResult<UserDTO>> GetCurrentUser()
         {
             var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));

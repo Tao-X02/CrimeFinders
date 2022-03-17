@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import { Post } from '../models/post';
+import { LoginForm, register, SignupForm, User } from '../models/user';
 
 // Set wait time for response
 const sleep = (delay: number) => {
@@ -43,8 +44,16 @@ const Posts = {
     delete: (id: string) => requests.del<void>(`/posts/${id}`)
 }
 
+// Object to store user requests
+const Users = {
+    current: () => requests.get<User>('/users/current'),
+    login: (user: LoginForm) => requests.post<User>('/users/login', user),
+    register: (user: register) => requests.post<User>('/users/register', user)
+}
+
 const agent = {
-    Posts
+    Posts,
+    Users
 }
 
 export default agent;
