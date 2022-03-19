@@ -44,5 +44,12 @@ namespace API.Controllers
         {
             return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
         }
+
+        [HttpPost("{id}/join")] // Delete a post
+        public async Task<IActionResult> Join(Guid id)
+        {
+            return HandleResult(await Mediator.Send(new UpdateMembers.Command{Id = id}));
+        }
+
     }
 }

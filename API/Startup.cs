@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using API.Extensions;
 using API.Services;
 using Application.Core;
+using Application.Interfaces;
 using Application.Posts;
 using FluentValidation.AspNetCore;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -74,6 +76,8 @@ namespace API
 
             // Add identity services
             services.AddIdentityServices(_config);
+
+            services.AddScoped<IUserAccessor, UserAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

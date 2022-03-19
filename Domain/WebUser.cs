@@ -10,5 +10,6 @@ namespace Domain
     {
         // Additional properties
         public string ScreeName { get; set; }
+        public ICollection<PostMember> Posts { get; set; }
     }
 }

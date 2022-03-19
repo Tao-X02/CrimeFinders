@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Profiles;
 
-namespace Domain
+namespace Application.Posts
 {
-    public class Post
+    public class PostDTO
     {
         public Guid Id { get; set; }
         public string Type { get; set; }
@@ -13,8 +14,9 @@ namespace Domain
         public string City { get; set; }
         public string Region { get; set; }
         public string Location { get; set; }
+        public string posterName { get; set; }
         public DateTime Date { get; set; }
         public bool IsCancelled { get; set; }
-        public ICollection<PostMember> Members { get; set; } = new List<PostMember>();
+        public ICollection<Profile> Members { get; set; }
     }
 }
