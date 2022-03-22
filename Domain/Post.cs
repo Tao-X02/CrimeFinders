@@ -16,5 +16,6 @@ namespace Domain
         public DateTime Date { get; set; }
         public bool IsCancelled { get; set; }
         public ICollection<PostMember> Members { get; set; } = new List<PostMember>();
+        public string PosterEmail { get; set; }
     }
 }

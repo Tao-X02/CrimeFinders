@@ -45,10 +45,10 @@ namespace API.Controllers
             return HandleResult(await Mediator.Send(new Delete.Command{Id = id}));
         }
 
-        [HttpPost("{id}/join")] // Delete a post
-        public async Task<IActionResult> Join(Guid id)
+        [HttpPost("{id}/join")] // Update members on a post
+        public async Task<IActionResult> Join(Guid id, String email)
         {
-            return HandleResult(await Mediator.Send(new UpdateMembers.Command{Id = id}));
+            return HandleResult(await Mediator.Send(new UpdateMembers.Command{Id = id, Email = email}));
         }
 
     }

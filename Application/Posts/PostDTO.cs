@@ -18,5 +18,6 @@ namespace Application.Posts
         public DateTime Date { get; set; }
         public bool IsCancelled { get; set; }
         public ICollection<Profile> Members { get; set; }
+        public string PosterEmail { get; set; }
     }
 }

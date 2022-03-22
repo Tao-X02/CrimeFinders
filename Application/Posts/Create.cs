@@ -47,7 +47,7 @@ namespace Application.Posts
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 // var user = await _context.Users.FirstOrDefaultAsync(x => x.UserName == _userAccessor.GetUsername());
-                var user = await _userManager.FindByEmailAsync("Hello@hotmail.com");
+                var user = await _userManager.FindByEmailAsync(request.Post.PosterEmail);
 
                 var member = new PostMember
                 {

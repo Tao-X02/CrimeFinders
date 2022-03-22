@@ -17,6 +17,7 @@ namespace Application.Posts
         public class Command : IRequest<Result<Unit>>
         {
             public Guid Id { get; set; }
+            public String Email { get; set; }
         }
 
         public class Handler : IRequestHandler<Command, Result<Unit>>
@@ -39,7 +40,7 @@ namespace Application.Posts
 
                 if (post == null) return null;
 
-                var user = await _userManager.FindByEmailAsync("Hello@hotmail.com");
+                var user = await _userManager.FindByEmailAsync(request.Email);
 
                 if (user == null) return null;
 
