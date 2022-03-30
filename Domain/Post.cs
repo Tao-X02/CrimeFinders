@@ -15,7 +15,8 @@ namespace Domain
         public string Location { get; set; }
         public DateTime Date { get; set; }
         public bool IsCancelled { get; set; }
-        public ICollection<PostMember> Members { get; set; } = new List<PostMember>();
+        public ICollection<PostMember> Members { get; set; } = new List<PostMember>(); // many-to-many relationship
         public string PosterEmail { get; set; }
+        public ICollection<Photo> Photos { get; set; } // one-to-many relationship
     }
 }

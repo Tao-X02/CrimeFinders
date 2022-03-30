@@ -8,6 +8,7 @@ using Application.Core;
 using Application.Interfaces;
 using Application.Posts;
 using FluentValidation.AspNetCore;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -78,6 +79,11 @@ namespace API
             services.AddIdentityServices(_config);
 
             services.AddScoped<IUserAccessor, UserAccessor>();
+            
+            services.AddScoped<IPhotoAccessor, PhotoAccessor>();
+
+            // Configure cloudinary
+            services.Configure<CloudinarySettings>(_config.GetSection("Cloudinary"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

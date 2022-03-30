@@ -16,6 +16,7 @@ namespace Persistence
 
         public DbSet<Post> allPosts { get; set; }
         public DbSet<PostMember> PostMembers { get; set; }
+        public DbSet<Photo> Photos { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

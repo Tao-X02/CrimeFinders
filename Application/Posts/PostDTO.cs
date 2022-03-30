@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Profiles;
+using Domain;
 
 namespace Application.Posts
 {
@@ -18,6 +19,7 @@ namespace Application.Posts
         public DateTime Date { get; set; }
         public bool IsCancelled { get; set; }
         public ICollection<Profile> Members { get; set; }
+        public ICollection<Photo> Photos { get; set; }
         public string PosterEmail { get; set; }
     }
 }

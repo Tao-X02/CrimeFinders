@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 // Interface to define a model for post
 export interface Post {
     id: string;
@@ -7,6 +9,10 @@ export interface Post {
     region: string;
     location: string;
     date: string;
+    posterName?: string;
+    posterEmail?: string;
+    members? : User[];
+    isCancelled?: boolean;
 }
 
 export interface Submit1 {
