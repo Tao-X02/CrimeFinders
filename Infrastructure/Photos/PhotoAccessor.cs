@@ -35,7 +35,7 @@ namespace Infrastructure.Photos
                 {
                     File = new FileDescription(file.FileName, stream),
                     // Transform to 500 x 500 square image
-                    Transformation = new Transformation().Height(500).Width(500).Crop("fill")
+                    Transformation = new Transformation().Crop("fill")
                 };
 
                 var uploadResult = await _cloudinary.UploadAsync(uploadParams);
