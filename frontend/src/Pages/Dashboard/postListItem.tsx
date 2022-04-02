@@ -48,16 +48,23 @@ export default function PostListItem({ post }: Props) {
                 <Typography gutterBottom variant="h5" component="div">{post.city}, {post.region}</Typography>
                 <Typography gutterBottom variant="body1" component="div">{post.location}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Description: {post.description.substring(0, 250).trim()}
-                    {post.description.length > 250 && "..."}
+                    Description: {post.description.substring(0, 270).trim()}
+                    {post.description.length > 270 && "... (click 'View' to read more)"}
                 </Typography>
             </CardContent>
-            <CardMedia
+            {post.photos && post.photos.length > 0 ? (<CardMedia
                 component="img"
                 height="350"
-                image="https://source.unsplash.com/random"
+                image={post.photos[0].url}
                 alt="Placeholder image"
-            />
+            />) : (
+                <CardMedia
+                    component="img"
+                    height="350"
+                    image="https://source.unsplash.com/random"
+                    alt="Placeholder image"
+                />
+            )}
             <CardActions>
                 <Button href={`/dashboard/${post.id}`} variant="outlined">Comments</Button>
                 <Grid container justifyContent="flex-end">

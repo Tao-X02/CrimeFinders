@@ -93,10 +93,10 @@ namespace API.Controllers
 
         // Get current user
         [Authorize]
-        [HttpGet("current")]
-        public async Task<ActionResult<UserDTO>> GetCurrentUser()
+        [HttpPost("current")]
+        public async Task<ActionResult<UserDTO>> GetCurrentUser(EmailDTO email)
         {
-            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+            var user = await _userManager.FindByEmailAsync(email.Email);
 
             return CreateUserObject(user);
         }

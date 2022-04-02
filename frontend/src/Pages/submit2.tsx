@@ -14,6 +14,8 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '../App/stores/store';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import agent from '../App/api/agent';
+import PhotoCroppper from '../Components/photoCropper';
 
 const baseStyle = {
     flex: 1,
@@ -44,31 +46,73 @@ const rejectStyle = {
 };
 
 export default observer(function Submit2() {
-    const {postStore} = useStore();
+    const {postStore, photoStore, userStore} = useStore();
 
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState<any>([]);
+    const [cropper, setCropper] = useState<Cropper>();
+
+    // Clean up preview
+    useEffect(() => {
+        return () => {
+            files.forEach((file: any) => URL.revokeObjectURL(file.preview))
+        }
+    }, [files])
 
     let navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log(String(data.get('description')));
 
-        let newId = uuid();
-        let newPost = {
-            id: newId,
-            type: postStore.submit1?.type ? postStore.submit1?.type : "",
-            description: String(data.get('description')),
-            city: postStore.submit1?.city ? postStore.submit1?.city : "",
-            region: postStore.submit1?.region ? postStore.submit1?.region : "",
-            location: postStore.submit1?.location ? postStore.submit1?.location : "",
-            date: postStore.submit1?.date ? postStore.submit1?.date : ""
+        // Get email from local storage
+        let email1 = window.localStorage.getItem("email");
+        if (email1 !== null) {
+            let inputJson = {
+                email: email1
+            }
+
+            // Get user
+            await agent.Users.current(inputJson).then(async res => {
+                let newId = uuid();
+
+                // Define new post
+                let newPost = {
+                    id: newId,
+                    type: postStore.submit1?.type ? postStore.submit1?.type : "",
+                    description: String(data.get('description')),
+                    city: postStore.submit1?.city ? postStore.submit1?.city : "",
+                    region: postStore.submit1?.region ? postStore.submit1?.region : "",
+                    location: postStore.submit1?.location ? postStore.submit1?.location : "",
+                    date: postStore.submit1?.date ? postStore.submit1?.date : "",
+                    posterName: res.userName ? res.userName : "",
+                    posterEmail: email1 ? email1 : "",
+                    members: [],
+                    photos: [],
+                    isCancelled: false
+                }
+
+                // Create post
+                await postStore.createPost(newPost);
+
+                files.forEach((file: any) => URL.revokeObjectURL(file.preview));
+
+                if (cropper) {
+                    cropper.getCroppedCanvas().toBlob(async blob => {
+                        let photoParams = {
+                            file: blob!,
+                            postId: newId
+                        }
+                        await photoStore.postPhoto(photoParams);
+                    });
+                }
+
+                navigate(`/dashboard`, { replace: true });
+                navigate(`/dashboard/${newId}`, { replace: true });
+            })
+            .catch(err => {
+                console.log(err);
+            })
         }
-
-        await postStore.createPost(newPost);
-        navigate(`/dashboard`, { replace: true });
-        navigate(`/dashboard/${newId}`, { replace: true });
     };
 
     const {
@@ -80,6 +124,7 @@ export default observer(function Submit2() {
     } = useDropzone({
         accept: "image/*",
         onDrop: (acceptedFiles: any) => {
+            console.log(acceptedFiles);
             setFiles(
                 acceptedFiles.map((file: any) => Object.assign(FileReader, {
                     preview: URL.createObjectURL(file)
@@ -160,7 +205,13 @@ export default observer(function Submit2() {
                                 <Typography variant="subtitle1" color="secondary">Drop or select an image here</Typography>
                             </Box>
                         </div>
-                        <div>{images}</div>
+                        {/* <div>{images}</div> */}
+                        {files && files.length > 0 && (
+                            <>
+                            <PhotoCroppper setCropper={setCropper} imagePreview={files[0].preview} />
+                            <div className='img-preview' style={{ minHeight: 200, overflow: 'hidden' }} />
+                            </>
+                        )}
                     </div>
                     </Grid>
                     <Button

@@ -1,3 +1,4 @@
+import { Photo } from "./photo";
 import { User } from "./user";
 
 // Interface to define a model for post
@@ -11,7 +12,8 @@ export interface Post {
     date: string;
     posterName?: string;
     posterEmail?: string;
-    members? : User[];
+    members? : any[];
+    photos?: any[];
     isCancelled?: boolean;
 }
 
@@ -21,4 +23,9 @@ export interface Submit1 {
     region: string;
     location: string;
     date: string;
+}
+
+export interface JoinPost {
+    id: string;
+    email: string;
 }

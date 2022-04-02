@@ -42,12 +42,19 @@ export default observer(function PostDetails() {
                 <Grid container direction="row">
                     <Grid item xs={8}>
                         <Card sx={{ maxWidth: '90%', marginTop: '3%' }}>
-                            <CardMedia
+                            {post.photos && post.photos.length > 0 ? (<CardMedia
                                 component="img"
                                 height="350"
-                                image="https://source.unsplash.com/random"
+                                image={post.photos[0].url}
                                 alt="Placeholder image"
-                            />
+                            />) : (
+                                <CardMedia
+                                    component="img"
+                                    height="350"
+                                    image="https://source.unsplash.com/random"
+                                    alt="Placeholder image"
+                                />
+                            )}
                             <CardContent>
                                 {post.description.split('\n').map((line: string, index) => (
                                     <div key={index}>

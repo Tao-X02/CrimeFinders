@@ -6,6 +6,7 @@ import { v4 as uuid } from 'uuid';
 export default class UserStore {
     user: User | null = null;
     token: string | null = null;
+    email: string | null = null;
     loginLoad = false;
 
     constructor() {
@@ -22,6 +23,7 @@ export default class UserStore {
         try {
             const user = await agent.Users.login(formValues);
             this.setToken(user.token);
+            this.setEmail(formValues.email);
             runInAction(() => {
                 this.user = user;
             })
@@ -44,11 +46,25 @@ export default class UserStore {
         try {
             const user = await agent.Users.register(submitForm);
             this.setToken(user.token);
+            this.setEmail(formValues.email);
             runInAction(() => {
                 this.user = user;
             })
             console.log(user);
         } catch (error) {
+            throw error;
+        }
+    }
+
+    // Current user
+    current = async (email: any) => {
+        try {
+            const user = await agent.Users.current(email);
+            runInAction(() => {
+                this.user = user;
+            })
+        } catch (error) {
+            console.log(error);
             throw error;
         }
     }
@@ -62,6 +78,11 @@ export default class UserStore {
     setToken = (token: string | null) => {
         if (token) window.localStorage.setItem("jwt", token);
         this.token = token;
+    }
+
+    setEmail = (email: string | null) => {
+        if (email) window.localStorage.setItem("email", email);
+        this.email = email;
     }
 
     setLoginLoad = () => {

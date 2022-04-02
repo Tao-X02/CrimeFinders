@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
-import { Post } from '../models/post';
-import { LoginForm, register, SignupForm, User } from '../models/user';
+import { Photo, PhotoPost } from '../models/photo';
+import { JoinPost, Post } from '../models/post';
+import { LoginForm, register, User } from '../models/user';
 
 // Set wait time for response
 const sleep = (delay: number) => {
@@ -41,19 +42,34 @@ const Posts = {
     details: (id: string) => requests.get<Post>(`/posts/${id}`),
     create: (newPost: Post) => requests.post<void>('/posts', newPost),
     update: (newPost: Post) => requests.put<void>(`/posts/${newPost.id}`, newPost),
-    delete: (id: string) => requests.del<void>(`/posts/${id}`)
+    delete: (id: string) => requests.del<void>(`/posts/${id}`),
+    join: (params: JoinPost) => requests.post<void>(`/posts/${params.id}/join`, params.email)
 }
 
 // Object to store user requests
 const Users = {
-    current: () => requests.get<User>('/users/current'),
+    current: (email: any) => requests.post<User>('/users/current', email),
     login: (user: LoginForm) => requests.post<User>('/users/login', user),
     register: (user: register) => requests.post<User>('/users/register', user)
 }
 
+// Store photo requests
+const Photos = {
+    post: (params: PhotoPost) => {
+        let formData = new FormData();
+        formData.append('File', params.file);
+        formData.append('PostId', params.postId);
+        return axios.post<Photo>('photos', formData, {
+            headers: { 'Content-type': 'multipart/form-data' }
+        })
+    },
+    delete: (id: string) => requests.del<void>(`/photos/${id}`)
+}
+
 const agent = {
     Posts,
-    Users
+    Users,
+    Photos
 }
 
 export default agent;
