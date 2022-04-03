@@ -46,7 +46,7 @@ const rejectStyle = {
 };
 
 export default observer(function Submit2() {
-    const {postStore, photoStore, userStore} = useStore();
+    const {postStore, photoStore} = useStore();
 
     const [files, setFiles] = useState<any>([]);
     const [cropper, setCropper] = useState<Cropper>();
@@ -144,13 +144,13 @@ export default observer(function Submit2() {
         isDragReject
     ]);
 
-    const images = files.map((file: any) => (
-        <div key={file.name}>
-            <div>
-                <img src={file.preview} style={{ width: '450px' }} alt="preview" />
-            </div>
-        </div>
-    ))
+    // const images = files.map((file: any) => (
+    //     <div key={file.name}>
+    //         <div>
+    //             <img src={file.preview} style={{ width: '450px' }} alt="preview" />
+    //         </div>
+    //     </div>
+    // ))
 
     return (
         <Box style={{ display: 'flex', backgroundColor: '#f2f3f5', minHeight: '100vh' , alignItems: 'center', justifyContent: 'center' }}>

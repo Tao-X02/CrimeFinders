@@ -1,7 +1,13 @@
 export interface User {
     userName: string;
-    screenName: string;
+    screeName: string;
     token: string;
+    image?: string;
+}
+
+export interface Profile {
+    userName: string;
+    screeName: string;
     image?: string;
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Post } from '../../App/models/post';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -9,7 +9,11 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
-import { BreakfastDiningOutlined } from '@mui/icons-material';
+import { observer } from 'mobx-react-lite';
+import agent from '../../App/api/agent';
+import { Profile } from '../../App/models/user';
+import { useStore } from '../../App/stores/store';
+import { useNavigate } from 'react-router-dom';
 
 // Define props interface
 interface Props {
@@ -27,13 +31,67 @@ function getType(post: Post) {
     }
 }
 
-export default function PostListItem({ post }: Props) {
+export default observer(function PostListItem({ post }: Props) {
+    const {postStore} = useStore();
+    const {deletePost} = postStore;
+
+    const [curEmail, setCurEmail] = useState("");
+    const [ joined, setJoined ] = useState(false);
+
+    let navigate = useNavigate();
+
+    useEffect(() => {
+        // Check if current user has joined search
+        const findMembers = (email: string | null) => {
+            if (email !== null) {
+                let inputJson = {
+                    email: email
+                }
+
+                agent.Users.current(inputJson).then(res => {
+                    let match = post.members?.filter((member: Profile) => member.userName === res.userName);
+                    if (match !== undefined && match.length > 0) setJoined(true);
+                })
+            }
+        }
+        // Check current email from local storage
+        const getEmail = () => {
+            let email = window.localStorage.getItem("email");
+            if (email != null) {
+                setCurEmail(email);
+                findMembers(email);
+            }
+        }
+        getEmail();
+    }, [post.members])
+
+    // Join search for current user
+    const handlejoin = async () => {
+        console.log("Join search");
+        let email = window.localStorage.getItem("email");
+        if (email !== null) {
+            let params = {
+                id: post.id,
+                email: email
+            }
+            await agent.Posts.join(params);
+        }
+    }
+
+    // Delete post
+    const handleDelete = async () => {
+        if (post.id) {
+            await deletePost(post.id);
+            navigate(`/dashboard`, { replace: true });
+        }
+    }
+
     return (
         <Card sx={{ maxWidth: '90%', marginTop: '3%' }}>
             <CardHeader
                 avatar={
                 <Avatar sx={{ bgcolor: '#f08529' }} aria-label="recipe">
-                    T
+                    {post.posterName !== null && post.posterName !== undefined ? post.posterName[0] : 'A'}
                 </Avatar>
                 }
                 action={
@@ -41,7 +99,7 @@ export default function PostListItem({ post }: Props) {
                     {getType(post)}
                 </div>
                 }
-                title="Anonymous User submitted a tip"
+                title={`${post.posterName !== null && post.posterName !== undefined ? post.posterName : "Anonymous User"} submitted a tip`}
                 subheader={post.date}
             />
             <CardContent sx={{ marginTop: '-2%' }}>
@@ -68,7 +126,12 @@ export default function PostListItem({ post }: Props) {
             <CardActions>
                 <Button href={`/dashboard/${post.id}`} variant="outlined">Comments</Button>
                 <Grid container justifyContent="flex-end">
-                    <Button variant="contained" color="success" size="small">Join Search</Button>
+                    {curEmail === post.posterEmail 
+                    ? <Button onClick={handleDelete} size="small" variant="contained" color="error">Delete</Button>
+                    : [joined 
+                        ? <Button variant="contained" color="error" size="small" onClick={handlejoin}>Unjoin</Button>
+                        : <Button variant="contained" color="success" size="small" onClick={handlejoin}>Join Search</Button>]
+                    }
                 </Grid>
                 <Grid>
                     <Button href={`/dashboard/${post.id}`} variant="contained" color="primary" size="small">View</Button>
@@ -76,4 +139,4 @@ export default function PostListItem({ post }: Props) {
             </CardActions>
         </Card>
     )
-}
+})

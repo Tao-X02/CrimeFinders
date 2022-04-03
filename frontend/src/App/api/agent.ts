@@ -32,6 +32,7 @@ const responseBody = <T> (response: AxiosResponse<T>) => response.data;
 const requests = {
     get: <T> (url: string) => axios.get<T>(url).then(responseBody),
     post: <T> (url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
+    postParams: <T> (url: string, body: {}, other: {}) => axios.post<T>(url, body, other).then(responseBody),
     put: <T> (url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
     del: <T> (url: string) => axios.delete<T>(url).then(responseBody),
 }
@@ -43,7 +44,7 @@ const Posts = {
     create: (newPost: Post) => requests.post<void>('/posts', newPost),
     update: (newPost: Post) => requests.put<void>(`/posts/${newPost.id}`, newPost),
     delete: (id: string) => requests.del<void>(`/posts/${id}`),
-    join: (params: JoinPost) => requests.post<void>(`/posts/${params.id}/join`, params.email)
+    join: (params: JoinPost) => requests.postParams<void>(`/posts/${params.id}/join`, {}, { params: { email: params.email } })
 }
 
 // Object to store user requests
