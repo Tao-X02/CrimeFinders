@@ -41,7 +41,7 @@ export default observer(function SideBar(props: Props) {
             <Typography style={{ marginLeft: '10%' }}>Anonymous User</Typography>
         </Toolbar>
         <Divider />
-        <div style={{ backgroundColor: current == "Dashboard" ? '#d9f6ff' : 'white' }}>
+        <div style={{ backgroundColor: current === "Dashboard" ? '#d9f6ff' : 'white' }}>
         <List>
             <Link href="/dashboard" variant="body2" style={{ textDecoration: 'none', color: 'black' }}>
             <ListItemButton>
@@ -54,7 +54,7 @@ export default observer(function SideBar(props: Props) {
         </List>
         </div>
         <Divider />
-        <div style={{ backgroundColor: current == "Submit" ? '#d9f6ff' : 'white' }}>
+        <div style={{ backgroundColor: current === "Submit" ? '#d9f6ff' : 'white' }}>
         <List>
             <Link href="/submit" variant="body2" style={{ textDecoration: 'none', color: 'black' }}>
             <ListItemButton>
@@ -67,7 +67,7 @@ export default observer(function SideBar(props: Props) {
         </List>
         </div>
         <Divider />
-        <div style={{ backgroundColor: current == "Profile" ? '#d9f6ff' : 'white' }}>
+        <div style={{ backgroundColor: current === "Profile" ? '#d9f6ff' : 'white' }}>
         <List>
             <Link href="/profile" variant="body2" style={{ textDecoration: 'none', color: 'black' }}>
             <ListItemButton>
@@ -83,6 +83,7 @@ export default observer(function SideBar(props: Props) {
         <List>
             <ListItemButton 
                 onClick={() => {
+                    console.log("Clicked");
                     userStore.logout();
                     navigate('/');
                 }}

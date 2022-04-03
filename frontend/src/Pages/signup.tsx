@@ -21,7 +21,7 @@ function Copyright(props: any) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        CrimeCrusher
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -43,7 +43,7 @@ export default observer(function SignUp() {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        if (data.get('password') != data.get('confirmPassword')) {
+        if (data.get('password') !== data.get('confirmPassword')) {
             setShowError(true);
             setErrorMessage("Passwords must match")
         }

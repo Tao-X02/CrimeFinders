@@ -65,10 +65,10 @@ export default observer(function Submit2() {
         const data = new FormData(event.currentTarget);
 
         // Get email from local storage
-        let email1 = window.localStorage.getItem("email");
-        if (email1 !== null) {
+        let email = window.localStorage.getItem("email");
+        if (email !== null) {
             let inputJson = {
-                email: email1
+                email: email
             }
 
             // Get user
@@ -85,7 +85,7 @@ export default observer(function Submit2() {
                     location: postStore.submit1?.location ? postStore.submit1?.location : "",
                     date: postStore.submit1?.date ? postStore.submit1?.date : "",
                     posterName: res.userName ? res.userName : "",
-                    posterEmail: email1 ? email1 : "",
+                    posterEmail: email ? email : "",
                     members: [],
                     photos: [],
                     isCancelled: false
