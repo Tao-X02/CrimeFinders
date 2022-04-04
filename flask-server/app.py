@@ -3,6 +3,8 @@ from flask_cors import CORS, cross_origin
 import face_recognition
 from urllib.request import urlopen
 import requests
+import cv2
+import numpy as np
 
 app = Flask(__name__)
 
@@ -28,8 +30,16 @@ def get_matches():
     data = request.get_json()
     photo_url = data["url"]
     response = urlopen(photo_url)
-    image = face_recognition.load_image_file(response)
-    face_encodings = face_recognition.face_encodings(image)
+
+    # Load image with OpenCV
+    image = np.asarray(bytearray(response.read()), dtype="uint8")
+    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # Get face encodings
+    boxes = face_recognition.face_locations(rgb, model='hog')
+    face_encodings = face_recognition.face_encodings(rgb, boxes)
+    # print(face_encodings)
 
     # Get all photos from ASP.NET backend
     all_photos = requests.get('http://localhost:5000/api/photos')
@@ -45,10 +55,17 @@ def get_matches():
             cur_url = photo["url"]
             if (cur_url != photo_url): # check not selected photo
                 cur_response = urlopen(cur_url)
-                cur_image = face_recognition.load_image_file(cur_response)
-                cur_face_encodings = face_recognition.face_encodings(cur_image)
 
-                # Compare photos if face can be identified
+                # Load new image with OpenCV
+                new_image = np.asarray(bytearray(cur_response.read()), dtype="uint8")
+                new_image = cv2.imdecode(new_image, cv2.IMREAD_COLOR)
+                new_rgb = cv2.cvtColor(new_image, cv2.COLOR_BGR2RGB)
+
+                # Get face encodings
+                new_boxes = face_recognition.face_locations(new_image, model='hog')
+                cur_face_encodings = face_recognition.face_encodings(new_rgb, new_boxes)
+
+                # Compare faces if face can be identified
                 if len(cur_face_encodings) > 0:
                     cur_encoding = cur_face_encodings[0]
                     result = face_recognition.compare_faces([cur_encoding], encoding_to_check)
