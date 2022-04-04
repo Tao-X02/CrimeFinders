@@ -121,7 +121,7 @@ export default observer(function PostDetails() {
                     </Grid>
                     <Grid item xs={4}>
                         <Card sx={{ maxWidth: '90%', marginTop: '6%' }}>
-                        <CardHeader
+                        {post.members?.length == 0 && <CardHeader
                             avatar={
                             <Avatar sx={{ bgcolor: '#f08529' }} aria-label="recipe">
                                 T
@@ -134,7 +134,7 @@ export default observer(function PostDetails() {
                             }
                             title="Anonymous User"
                             subheader={post.date}
-                        />
+                        />}
                         {post.members?.map((member: Profile) => (
                             <CardHeader
                                 avatar={
@@ -154,6 +154,11 @@ export default observer(function PostDetails() {
                             />
                         ))}
                         </Card>
+                        <Box style={{ marginTop: '10%' }}>
+                            <Typography component="h1" variant="h5">
+                                Match results:
+                            </Typography>
+                        </Box>
                     </Grid>
                 </Grid>
             </Box>
