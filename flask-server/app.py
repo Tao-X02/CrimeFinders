@@ -25,6 +25,7 @@ def post_example():
 
 # POST method to return matches for a photo
 @app.route("/matches", methods=["POST"])
+@cross_origin()
 def get_matches():
     # Get photo url from JSON request
     data = request.get_json()

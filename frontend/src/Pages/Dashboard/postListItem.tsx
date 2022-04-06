@@ -14,6 +14,7 @@ import agent from '../../App/api/agent';
 import { Profile } from '../../App/models/user';
 import { useStore } from '../../App/stores/store';
 import { useNavigate } from 'react-router-dom';
+import { Photo } from '../../App/models/photo';
 
 // Define props interface
 interface Props {
@@ -33,7 +34,7 @@ function getType(post: Post) {
 
 export default observer(function PostListItem({ post }: Props) {
     const {postStore} = useStore();
-    const {deletePost} = postStore;
+    const {deletePost, setLoading} = postStore;
 
     const [curEmail, setCurEmail] = useState("");
     const [ joined, setJoined ] = useState(false);
@@ -77,12 +78,26 @@ export default observer(function PostListItem({ post }: Props) {
             await agent.Posts.join(params);
         }
     }
+    
+    const deletePhotos = async (id: string) => {
+        setLoading(true);
+        let post = await agent.Posts.details(id);
+        if (post.photos && post.photos.length > 0) {
+            post.photos.forEach(async (photo: Photo) => {
+                await agent.Photos.delete(photo.id);
+            })
+        }
+    }
 
     // Delete post
     const handleDelete = async () => {
+        setLoading(true);
         if (post.id) {
-            await deletePost(post.id);
-            navigate(`/dashboard`, { replace: true });
+            await deletePhotos(post.id);
+            setTimeout(() => {
+                deletePost(post.id);
+                navigate(`/dashboard`, { replace: true });
+            }, 1000);
         }
     }
 

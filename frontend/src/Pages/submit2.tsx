@@ -16,6 +16,7 @@ import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import agent from '../App/api/agent';
 import PhotoCroppper from '../Components/photoCropper';
+import LoadingComponent from '../Components/loadingComponent';
 
 const baseStyle = {
     flex: 1,
@@ -63,6 +64,7 @@ export default observer(function Submit2() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        postStore.setLoading(true);
 
         // Get email from local storage
         let email = window.localStorage.getItem("email");
@@ -94,7 +96,7 @@ export default observer(function Submit2() {
                 // Create post
                 await postStore.createPost(newPost);
 
-                files.forEach((file: any) => URL.revokeObjectURL(file.preview));
+                await files.forEach((file: any) => URL.revokeObjectURL(file.preview));
 
                 if (cropper) {
                     cropper.getCroppedCanvas().toBlob(async blob => {
@@ -103,11 +105,16 @@ export default observer(function Submit2() {
                             postId: newId
                         }
                         await photoStore.postPhoto(photoParams);
+                        setTimeout(() => {
+                            navigate(`/dashboard`, { replace: true });
+                            postStore.setLoading(false);
+                        }, 1500)
                     });
                 }
-
-                navigate(`/dashboard`, { replace: true });
-                navigate(`/dashboard/${newId}`, { replace: true });
+                else {
+                    navigate(`/dashboard`, { replace: true });
+                    navigate(`/dashboard/${newId}`, { replace: true });
+                }
             })
             .catch(err => {
                 console.log(err);
@@ -151,6 +158,8 @@ export default observer(function Submit2() {
     //         </div>
     //     </div>
     // ))
+
+    if (postStore.loading) return <LoadingComponent />
 
     return (
         <Box style={{ display: 'flex', backgroundColor: '#f2f3f5', minHeight: '100vh' , alignItems: 'center', justifyContent: 'center' }}>

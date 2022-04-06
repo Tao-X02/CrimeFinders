@@ -107,6 +107,9 @@ export default observer(function SignUp() {
                     autoComplete="family-name"
                     />
                 </Grid>
+                <Typography style={{ marginLeft: '4%' }} component="h1" variant="body1" color="error">
+                    *Note: Your name will be completely confidential
+                </Typography>
                 <Grid item xs={12}>
                     <TextField
                     required
@@ -137,12 +140,6 @@ export default observer(function SignUp() {
                     type="password"
                     id="confirmPassword"
                     autoComplete="new-confirmPassword"
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <FormControlLabel
-                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                    label="I want to receive inspiration, marketing promotions and updates via email."
                     />
                 </Grid>
                 </Grid>

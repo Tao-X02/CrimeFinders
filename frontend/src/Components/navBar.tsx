@@ -45,7 +45,7 @@ export default observer(function Navbar(props: Props) {
             </Typography>
             <div style={{ marginLeft: '2%' }}>
             <Link href="/submit">
-            {submit != true && <Button variant="contained" color="primary" size="small">Submit a Tip</Button>}
+            {submit != true && <Button variant="contained" color="primary" size="small">Submit or Request a Tip</Button>}
             </Link>
             </div>
             </Toolbar>

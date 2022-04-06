@@ -1,7 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import agent from "../api/agent";
 import { Post, Submit1 } from "../models/post";
-import { v4 as uuid } from 'uuid';
 
 export default class PostStore {
     // Class variables
@@ -70,7 +69,6 @@ export default class PostStore {
             runInAction(() => {
                 this.postRegistry.set(post.id, post);
                 this.selectedPost = post;
-                this.loading = false;
             })
         } catch (error) {
             console.log(error);
@@ -116,9 +114,13 @@ export default class PostStore {
         this.loadingInitial = state;
     }
 
+    setLoading = (state: boolean) => {
+        this.loading = state;
+    }
+
     // Update mobile open boolean
     handleDrawerToggle = () => {
-        this.mobileOpen == true
+        this.mobileOpen === true
          ? this.mobileOpen = false
          : this.mobileOpen = true
     }

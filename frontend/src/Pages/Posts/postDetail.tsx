@@ -1,23 +1,33 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Divider, Grid, Toolbar, Typography } from '@mui/material';
+import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import agent from '../../App/api/agent';
+import { Photo } from '../../App/models/photo';
+import { Post } from '../../App/models/post';
 import { Profile } from '../../App/models/user';
 import { useStore } from '../../App/stores/store';
 import LoadingComponent from '../../Components/loadingComponent';
 import NavBar from '../../Components/navBar';
 import SideBar from '../../Components/sideBar';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const drawerWidth = 300;
 
 export default observer(function PostDetails() {
     const {postStore} = useStore();
-    const {selectedPost: post, loadPost, loadingInitial, deletePost} = postStore;
+    const {selectedPost: post, loadPost, loadingInitial, deletePost, setLoading} = postStore;
     const {id} = useParams<{id: string}>();
 
     const [curEmail, setCurEmail] = useState("");
     const [ joined, setJoined ] = useState(false);
+
+    // Match results
+    const [matches, setMatches] = useState<Post[]>([]);
+    const [loadingResults, setLoadingResults] = useState(false);
+    const [found, setFound] = useState(true);
+    const [checked, setChecked] = useState(false);
 
     let navigate = useNavigate();
 
@@ -50,11 +60,25 @@ export default observer(function PostDetails() {
         if (id) loadPost(id);
     }, [id, loadPost])
 
+    const deletePhotos = async (id: string) => {
+        setLoading(true);
+        let post = await agent.Posts.details(id);
+        if (post.photos && post.photos.length > 0) {
+            post.photos.forEach(async (photo: Photo) => {
+                await agent.Photos.delete(photo.id);
+            })
+        }
+    }
+
     // Delete post
     const handleDelete = async () => {
+        setLoading(true);
         if (id) {
-            await deletePost(id);
-            navigate(`/dashboard`, { replace: true });
+            await deletePhotos(id);
+            setTimeout(() => {
+                deletePost(id);
+                navigate(`/dashboard`, { replace: true });
+            }, 1000);
         }
     }
 
@@ -68,6 +92,57 @@ export default observer(function PostDetails() {
                 email: email
             }
             await agent.Posts.join(params);
+        }
+    }
+
+    // Load posts to update post registry
+    useEffect(() => {
+        postStore.loadPosts();
+    }, [postStore])
+
+    // Check for match results from flask server
+    const runMatches = () => {
+        setLoadingResults(true);
+        let matchedPhotos : Photo[] = [];
+
+        // Run through matched photos
+        if (post && post.photos && post?.photos.length > 0) {
+            axios.post("http://localhost:8000/matches", {
+                url: post.photos[0].url
+            })
+            .then(res => {
+                matchedPhotos = res.data.matches;
+
+                console.log(matchedPhotos)
+                if (matchedPhotos.length === 0) {
+                    setFound(false);
+                    setLoadingResults(false);
+                }
+                else {
+                    // Filter through post list
+                    let posts = postStore.postsByDate.filter(curPost => {
+                        if (curPost.id === post.id) {
+                            return false;
+                        }
+
+                        // Check for identical photo IDs
+                        else if (curPost.photos && curPost.photos.length > 0) {
+                            for (const photo of matchedPhotos) {
+                                if (photo.id === curPost.photos[0].id) return true;
+                            }
+                        }
+                        return false;
+                    });
+                    console.log(posts);
+                    setMatches(posts);
+                    setLoadingResults(false);
+                }
+                setChecked(true);
+            })
+            .catch(err => {
+                console.log(err);
+                setChecked(true);
+            })
         }
     }
 
@@ -121,7 +196,7 @@ export default observer(function PostDetails() {
                     </Grid>
                     <Grid item xs={4}>
                         <Card sx={{ maxWidth: '90%', marginTop: '6%' }}>
-                        {post.members?.length == 0 && <CardHeader
+                        {post.members?.length === 0 && <CardHeader
                             avatar={
                             <Avatar sx={{ bgcolor: '#f08529' }} aria-label="recipe">
                                 T
@@ -137,6 +212,7 @@ export default observer(function PostDetails() {
                         />}
                         {post.members?.map((member: Profile) => (
                             <CardHeader
+                                key={member.userName}
                                 avatar={
                                 <Avatar sx={{ bgcolor: '#3273a8' }} aria-label="recipe">
                                     {member.screeName[0]}
@@ -155,9 +231,40 @@ export default observer(function PostDetails() {
                         ))}
                         </Card>
                         <Box style={{ marginTop: '10%' }}>
-                            <Typography component="h1" variant="h5">
-                                Match results:
-                            </Typography>
+                            <Button onClick={runMatches} variant="contained" color="success" size="small">
+                                Check for match with existing tips
+                            </Button>
+                            {loadingResults && 
+                                <Grid container justifyContent="center" style={{ width: '90%', marginTop: '5%' }}>
+                                    <CircularProgress style={{ alignSelf: 'center' }} color="secondary" />
+                                </Grid>
+                            }
+                            {checked && <div style={{ marginTop: '5%' }}>
+                                {found ? <Typography component="h1" variant="h6">Found {matches.length} identical face(s):</Typography>
+                                    : <Typography component="h1" variant="h6">No match was found.</Typography>}
+                            </div>}
+                            {matches.map((match : Post, index: number) => (
+                                <Card sx={{ maxWidth: '90%', marginTop: '5%' }} key={index}>
+                                    <CardContent>
+                                        <Typography variant="h5" component="div">
+                                            {match.city}, {match.region}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {match.location}
+                                        </Typography>
+                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                            {match.date}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            {match.description.substring(0, 30).trim()}
+                                            {match.description.length > 30 && "..."}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button href={`/dashboard/${match.id}`} size="small">View post</Button>
+                                    </CardActions>
+                                </Card>
+                            ))}
                         </Box>
                     </Grid>
                 </Grid>

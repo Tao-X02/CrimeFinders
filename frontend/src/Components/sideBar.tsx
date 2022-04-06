@@ -61,7 +61,7 @@ export default observer(function SideBar(props: Props) {
                 <ListItemIcon>
                     <BackupIcon />
                 </ListItemIcon>
-                <ListItemText primary={"Submit"} />
+                <ListItemText primary={"Submit/Request"} />
             </ListItemButton>
             </Link>
         </List>
