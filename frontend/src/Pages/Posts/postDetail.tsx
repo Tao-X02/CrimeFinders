@@ -25,6 +25,7 @@ export default observer(function PostDetails() {
 
     // Match results
     const [matches, setMatches] = useState<Post[]>([]);
+    const [textMatches, setTextMatches] = useState<Post[]>([]);
     const [loadingResults, setLoadingResults] = useState(false);
     const [found, setFound] = useState(true);
     const [checked, setChecked] = useState(false);
@@ -104,14 +105,17 @@ export default observer(function PostDetails() {
     const runMatches = () => {
         setLoadingResults(true);
         let matchedPhotos : Photo[] = [];
+        let matchedWords : Post[] = [];
 
         // Run through matched photos
         if (post && post.photos && post?.photos.length > 0) {
             axios.post("http://localhost:8000/matches", {
-                url: post.photos[0].url
+                post_id: post.id
             })
             .then(res => {
-                matchedPhotos = res.data.matches;
+                matchedPhotos = res.data.faces;
+                matchedWords = res.data.texts;
+                setTextMatches(matchedWords);
 
                 console.log(matchedPhotos)
                 if (matchedPhotos.length === 0) {
@@ -142,6 +146,7 @@ export default observer(function PostDetails() {
             .catch(err => {
                 console.log(err);
                 setChecked(true);
+                setLoadingResults(false);
             })
         }
     }
@@ -244,6 +249,32 @@ export default observer(function PostDetails() {
                                     : <Typography component="h1" variant="h6">No match was found.</Typography>}
                             </div>}
                             {matches.map((match : Post, index: number) => (
+                                <Card sx={{ maxWidth: '90%', marginTop: '5%' }} key={index}>
+                                    <CardContent>
+                                        <Typography variant="h5" component="div">
+                                            {match.city}, {match.region}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {match.location}
+                                        </Typography>
+                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                            {match.date}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            {match.description.substring(0, 30).trim()}
+                                            {match.description.length > 30 && "..."}
+                                        </Typography>
+                                    </CardContent>
+                                    <CardActions>
+                                        <Button href={`/dashboard/${match.id}`} size="small">View post</Button>
+                                    </CardActions>
+                                </Card>
+                            ))}
+                            {checked && <div style={{ marginTop: '5%' }}>
+                                {textMatches.length > 0 ? <Typography component="h1" variant="h6">Similar posts:</Typography>
+                                    : <Typography component="h1" variant="h6">No similar post</Typography>}
+                            </div>}
+                            {textMatches.slice(0, 3).map((match : Post, index: number) => (
                                 <Card sx={{ maxWidth: '90%', marginTop: '5%' }} key={index}>
                                     <CardContent>
                                         <Typography variant="h5" component="div">

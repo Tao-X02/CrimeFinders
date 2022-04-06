@@ -5,8 +5,10 @@ from urllib.request import urlopen
 import requests
 import cv2
 import numpy as np
+from utils import get_faces, get_texts
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/", methods=["GET"])
 def get_example():
@@ -27,53 +29,39 @@ def post_example():
 @app.route("/matches", methods=["POST"])
 @cross_origin()
 def get_matches():
-    # Get photo url from JSON request
+    # Get post from JSON request and ASP.NET backend
     data = request.get_json()
-    photo_url = data["url"]
-    response = urlopen(photo_url)
+    post_id = data["post_id"]
+    post = requests.get('http://localhost:5000/api/posts/' + post_id)
+    post = post.json()
 
-    # Load image with OpenCV
-    image = np.asarray(bytearray(response.read()), dtype="uint8")
-    image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    list_faces = []
+    list_texts = []
 
-    # Get face encodings
-    boxes = face_recognition.face_locations(rgb, model='hog')
-    face_encodings = face_recognition.face_encodings(rgb, boxes)
-    # print(face_encodings)
+    # Get photo
+    photos = post["photos"]
+    if len(photos) > 0:
+        photo_url = photos[0]["url"]
+        response = urlopen(photo_url)
 
-    # Get all photos from ASP.NET backend
-    all_photos = requests.get('http://localhost:5000/api/photos')
-    p = all_photos.json()
+        # Load image with OpenCV
+        image = np.asarray(bytearray(response.read()), dtype="uint8")
+        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+        rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    # Check if face exists on photo
-    matches = []
-    if len(face_encodings) > 0:
-        encoding_to_check = face_encodings[0]
+        # Get face encodings
+        boxes = face_recognition.face_locations(rgb, model='hog')
+        face_encodings = face_recognition.face_encodings(rgb, boxes)
 
-        # Query through all photos
-        for photo in p:
-            cur_url = photo["url"]
-            if (cur_url != photo_url): # check not selected photo
-                cur_response = urlopen(cur_url)
+        if len(face_encodings) > 0:
+            # Get all posts from ASP.NET backend
+            all_posts = requests.get('http://localhost:5000/api/posts')
+            p = all_posts.json()
 
-                # Load new image with OpenCV
-                new_image = np.asarray(bytearray(cur_response.read()), dtype="uint8")
-                new_image = cv2.imdecode(new_image, cv2.IMREAD_COLOR)
-                new_rgb = cv2.cvtColor(new_image, cv2.COLOR_BGR2RGB)
+            list_faces = get_faces(face_encodings, p, photo_url)
+            list_texts = get_texts(post, p)
 
-                # Get face encodings
-                new_boxes = face_recognition.face_locations(new_image, model='hog')
-                cur_face_encodings = face_recognition.face_encodings(new_rgb, new_boxes)
-
-                # Compare faces if face can be identified
-                if len(cur_face_encodings) > 0:
-                    cur_encoding = cur_face_encodings[0]
-                    result = face_recognition.compare_faces([cur_encoding], encoding_to_check)
-                    if result[0] == True:
-                        matches.append(photo)
-
-    return jsonify({'matches': matches})
+    return jsonify({'faces': list_faces, 'texts': list_texts})
 
 if __name__ == "__main__":
   app.run(port=8000)
