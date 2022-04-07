@@ -32,7 +32,7 @@ def get_matches():
     # Get post from JSON request and ASP.NET backend
     data = request.get_json()
     post_id = data["post_id"]
-    post = requests.get('http://localhost:5000/api/posts/' + post_id)
+    post = requests.get('http://host.docker.internal:5000/api/posts/' + post_id)
     post = post.json()
 
     list_faces = []
@@ -55,7 +55,7 @@ def get_matches():
 
         if len(face_encodings) > 0:
             # Get all posts from ASP.NET backend
-            all_posts = requests.get('http://localhost:5000/api/posts')
+            all_posts = requests.get('http://host.docker.internal:5000/api/posts')
             p = all_posts.json()
 
             list_faces = get_faces(face_encodings, p, photo_url)
@@ -64,4 +64,4 @@ def get_matches():
     return jsonify({'faces': list_faces, 'texts': list_texts})
 
 if __name__ == "__main__":
-  app.run(port=8000)
+    app.run(debug=True, host='0.0.0.0', port=8000)
