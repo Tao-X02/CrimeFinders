@@ -41,7 +41,7 @@ export default observer(function Navbar(props: Props) {
                 <MenuIcon />
             </IconButton>
             <Typography variant="h5" noWrap component="div">
-                CrimeCrusher
+                CrimeFinders
             </Typography>
             <div style={{ marginLeft: '2%' }}>
             <Link href="/submit">

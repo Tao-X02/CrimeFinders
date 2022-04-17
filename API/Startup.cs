@@ -57,7 +57,7 @@ namespace API
             // Add Data Context
             services.AddDbContext<DataContext>(opt => 
             {
-                opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+                opt.UseNpgsql(_config.GetConnectionString("DefaultConnection"));
             });
 
             // Add MediatR
@@ -89,6 +89,7 @@ namespace API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -23,15 +23,10 @@ namespace Persistence
                         Email = "sample@test.com"
                     },
                     new WebUser{
-                        ScreeName = "Tao",
-                        UserName = "TaoX02",
-                        Email = "taoguangxing@gmail.com"
-                    },
-                    new WebUser{
                         ScreeName = "Test",
                         UserName = "Test1",
                         Email = "test@gmail.com"
-                    }
+                    },
                 };
 
                 // Create passowrd for each user

@@ -21,7 +21,7 @@ function Copyright(props: any) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        CrimeCrusher
+        CrimeFinders
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -74,7 +74,7 @@ export default observer(function SignInSide() {
                 style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', color: "#FFFFFF" }}
                 >
                     <Typography fontStyle='oblique' fontWeight='bold' component="h1" variant="h2">
-                        CrimeCrusher
+                        CrimeFinders
                     </Typography>
                     <Box sx={{ width: 11/15, textAlign: 'center', marginTop: '8%' }}>
                         <Typography component="h1" variant="h5">

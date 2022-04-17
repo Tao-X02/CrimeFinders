@@ -21,7 +21,7 @@ function Copyright(props: any) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        CrimeCrusher
+        CrimeFinders
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -107,7 +107,7 @@ export default observer(function SignUp() {
                     autoComplete="family-name"
                     />
                 </Grid>
-                <Typography style={{ marginLeft: '4%' }} component="h1" variant="body1" color="error">
+                <Typography style={{ marginLeft: '4%' }} component="h1" variant="body1">
                     *Note: Your name will be completely confidential
                 </Typography>
                 <Grid item xs={12}>
@@ -131,6 +131,15 @@ export default observer(function SignUp() {
                     autoComplete="new-password"
                     />
                 </Grid>
+                <Typography style={{ marginLeft: '4%' }} component="h1" variant="body1">
+                    - Between 4 and 15 characters
+                </Typography>
+                <Typography style={{ marginLeft: '4%' }} component="h1" variant="body1">
+                    - At least one upper case one lower case
+                </Typography>
+                <Typography style={{ marginLeft: '4%' }} component="h1" variant="body1">
+                    - At least one number and one special character
+                </Typography>
                 <Grid item xs={12}>
                     <TextField
                     required
