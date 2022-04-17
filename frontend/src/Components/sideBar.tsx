@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../App/stores/store';
 import Box from '@mui/material/Box';
@@ -17,28 +17,45 @@ import PersonIcon from '@mui/icons-material/Person';
 import BackupIcon from '@mui/icons-material/Backup';
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
+import agent from '../App/api/agent';
 
 const drawerWidth = 300;
 
 // Define props interface
 interface Props {
-    window?: () => Window;
+    window1?: () => Window;
     current?: string;
 }
 
 
 export default observer(function SideBar(props: Props) {
+    const [name, setName] = useState("Anonymous User");
+
     const {postStore, userStore} = useStore();
 
-    const { window, current } = props;
+    useEffect(() => {
+        const findUser = () => {
+            let email = window.localStorage.getItem("email");
 
+            let inputJson = {
+                email: email
+            }
+
+            agent.Users.current(inputJson).then(res => {
+                setName(res.userName);
+            })
+        }
+        findUser();
+    }, [])
+
+    const { window1, current } = props;
     let navigate = useNavigate();
 
     const drawer = (
         <div>
         <Toolbar style={{ height: '50%' }}>
             <PersonIcon />
-            <Typography style={{ marginLeft: '10%' }}>Anonymous User</Typography>
+            <Typography style={{ marginLeft: '10%' }}>{name}</Typography>
         </Toolbar>
         <Divider />
         <div style={{ backgroundColor: current === "Dashboard" ? '#d9f6ff' : 'white' }}>
@@ -97,7 +114,7 @@ export default observer(function SideBar(props: Props) {
         </div>
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const container = window1 !== undefined ? () => window1().document.body : undefined;
 
     return (
         <Box

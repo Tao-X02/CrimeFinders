@@ -225,7 +225,7 @@ export default observer(function PostDetails() {
                                 }
                                 action={
                                 <>
-                                    {member.screeName === post.posterName && <div>
+                                    {member.userName === post.posterName && <div>
                                         <Button variant="contained" color="warning" size="small">Poster</Button>
                                     </div>}
                                 </>

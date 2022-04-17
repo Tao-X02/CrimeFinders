@@ -64,6 +64,8 @@ export default observer(function PostListItem({ post }: Props) {
             }
         }
         getEmail();
+        console.log("HERE1");
+        console.log(post);
     }, [post.members])
 
     // Join search for current user
@@ -105,8 +107,8 @@ export default observer(function PostListItem({ post }: Props) {
         <Card sx={{ maxWidth: '90%', marginTop: '3%' }}>
             <CardHeader
                 avatar={
-                <Avatar sx={{ bgcolor: '#f08529' }} aria-label="recipe">
-                    {post.posterName !== null && post.posterName !== undefined ? post.posterName[0] : 'A'}
+                <Avatar sx={{ bgcolor: '#3273a8' }} aria-label="recipe">
+                    {post.members !== undefined && post.members.length > 0 ? post.members[0].screeName[0] : 'A'}
                 </Avatar>
                 }
                 action={
@@ -114,7 +116,9 @@ export default observer(function PostListItem({ post }: Props) {
                     {getType(post)}
                 </div>
                 }
-                title={`${post.posterName !== null && post.posterName !== undefined ? post.posterName : "Anonymous User"} submitted a tip`}
+                title={`${post.members !== undefined && post.members.length > 0
+                    ? post.members[0].screeName
+                    : "Anonymous User"} submitted a tip`}
                 subheader={post.date}
             />
             <CardContent sx={{ marginTop: '-2%' }}>

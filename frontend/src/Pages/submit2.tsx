@@ -108,7 +108,7 @@ export default observer(function Submit2() {
                         setTimeout(() => {
                             navigate(`/dashboard`, { replace: true });
                             postStore.setLoading(false);
-                        }, 1500)
+                        }, 1900)
                     });
                 }
                 else {
