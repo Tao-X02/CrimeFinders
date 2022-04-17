@@ -40,30 +40,32 @@ export default observer(function SignUp() {
     let navigate = useNavigate();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        if (showError === false) {
+            event.preventDefault();
+            const data = new FormData(event.currentTarget);
 
-        if (data.get('password') !== data.get('confirmPassword')) {
-            setShowError(true);
-            setErrorMessage("Passwords must match")
+            if (data.get('password') !== data.get('confirmPassword')) {
+                setShowError(true);
+                setErrorMessage("Passwords must match")
+            }
+
+            let signupInfo = {
+                firstName: String(data.get('firstName')),
+                lastName: String(data.get('lastName')),
+                email: String(data.get('email')),
+                password: String(data.get('password')),
+            }
+
+            userStore.signup(signupInfo)
+            .then(res => {
+                navigate('/dashboard');
+                setShowError(false);
+            })
+            .catch(err => {
+                setShowError(true);
+                setErrorMessage("Please check that all sections are complete. Email may have been taken.")
+            })
         }
-
-        let signupInfo = {
-            firstName: String(data.get('firstName')),
-            lastName: String(data.get('lastName')),
-            email: String(data.get('email')),
-            password: String(data.get('password')),
-        }
-
-        userStore.signup(signupInfo)
-        .then(res => {
-            navigate('/dashboard');
-            setShowError(false);
-        })
-        .catch(err => {
-            setShowError(true);
-            setErrorMessage("Please check that all sections are complete. Email may have been taken.")
-        })
     };
 
     return (

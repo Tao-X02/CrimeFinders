@@ -35,15 +35,8 @@ export default observer(function SideBar(props: Props) {
 
     useEffect(() => {
         const findUser = () => {
-            let email = window.localStorage.getItem("email");
-
-            let inputJson = {
-                email: email
-            }
-
-            agent.Users.current(inputJson).then(res => {
-                setName(res.userName);
-            })
+            let name1 = window.localStorage.getItem("name");
+            if (name1 !== null) setName(name1);
         }
         findUser();
     }, [])

@@ -24,6 +24,7 @@ export default class UserStore {
             const user = await agent.Users.login(formValues);
             this.setToken(user.token);
             this.setEmail(formValues.email);
+            this.setUserName(user.userName);
             runInAction(() => {
                 this.user = user;
             })
@@ -47,6 +48,7 @@ export default class UserStore {
             const user = await agent.Users.register(submitForm);
             this.setToken(user.token);
             this.setEmail(formValues.email);
+            this.setUserName(submitForm.userName);
             runInAction(() => {
                 this.user = user;
             })
@@ -83,6 +85,10 @@ export default class UserStore {
     setEmail = (email: string | null) => {
         if (email) window.localStorage.setItem("email", email);
         this.email = email;
+    }
+
+    setUserName = (name: string | null) => {
+        if (name) window.localStorage.setItem("name", name);
     }
 
     setLoginLoad = () => {
