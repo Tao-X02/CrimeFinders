@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import Grid from '@mui/material/Grid';
 import PostList from './postList';
@@ -16,9 +16,21 @@ const drawerWidth = 300;
 export default observer(function Dashboard() {
     const {postStore} = useStore();
 
+    const [ myName, setMyName ] = useState("");
+
     useEffect(() => {
         postStore.loadPosts();
     }, [postStore])
+
+    useEffect(() => {
+        const getName = () => {
+            let name = window.localStorage.getItem("name");
+            if (name !== null) {
+                setMyName(name);
+            }
+        }
+        getName();
+    }, [])
 
     if (postStore.loadingInitial || postStore.loading) return <LoadingComponent />
 
@@ -34,7 +46,7 @@ export default observer(function Dashboard() {
                 <Toolbar />
                 <Grid container direction="row">
                     <Grid item xs={8}>
-                        <PostList />
+                        <PostList name={myName} />
                     </Grid>
                     <Grid item xs={4}>
                         <Filter />

@@ -11,6 +11,7 @@ export default class PostStore {
     loadingInitial = true;
     mobileOpen = false;
     submit1: Submit1 | undefined = undefined;
+    filter: string = "default";
 
     constructor() {
         makeAutoObservable(this)
@@ -132,5 +133,9 @@ export default class PostStore {
     // Temporarily store info from submission form 1
     setSubmission1 = (submission: Submit1) => {
         this.submit1 = submission;
+    }
+
+    setFilter = (newFilter: string) => {
+        this.filter = newFilter;
     }
 }

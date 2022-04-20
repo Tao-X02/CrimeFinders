@@ -18,7 +18,8 @@ import { Photo } from '../../App/models/photo';
 
 // Define props interface
 interface Props {
-    post: Post
+    post: Post,
+    name: string
 }
 
 function getType(post: Post) {
@@ -32,7 +33,7 @@ function getType(post: Post) {
     }
 }
 
-export default observer(function PostListItem({ post }: Props) {
+export default observer(function PostListItem({ post, name }: Props) {
     const {postStore} = useStore();
     const {deletePost, setLoading} = postStore;
 
@@ -44,15 +45,9 @@ export default observer(function PostListItem({ post }: Props) {
     useEffect(() => {
         // Check if current user has joined search
         const findMembers = (email: string | null) => {
-            if (email !== null) {
-                let inputJson = {
-                    email: email
-                }
-
-                agent.Users.current(inputJson).then(res => {
-                    let match = post.members?.filter((member: Profile) => member.userName === res.userName);
-                    if (match !== undefined && match.length > 0) setJoined(true);
-                })
+            if (name !== null) {
+                let match = post.members?.filter((member: Profile) => member.userName === name);
+                if (match !== undefined && match.length > 0) setJoined(true);
             }
         }
         // Check current email from local storage
@@ -64,9 +59,7 @@ export default observer(function PostListItem({ post }: Props) {
             }
         }
         getEmail();
-        console.log("HERE1");
-        console.log(post);
-    }, [post.members])
+    }, [])
 
     // Join search for current user
     const handlejoin = async () => {
