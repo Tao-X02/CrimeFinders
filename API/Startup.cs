@@ -55,9 +55,37 @@ namespace API
             });
 
             // Add Data Context
-            services.AddDbContext<DataContext>(opt => 
+            services.AddDbContext<DataContext>(options =>
             {
-                opt.UseNpgsql(_config.GetConnectionString("DefaultConnection"));
+                var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+                string connStr;
+
+                // Use development connection string
+                if (env == "Development")
+                {
+                    // Use connection string from file.
+                    connStr = _config.GetConnectionString("DefaultConnection");
+                }
+                // Use Heroku connection string for PostgreSQL
+                else
+                {
+                    var connUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+
+                    connUrl = connUrl.Replace("postgres://", string.Empty);
+                    var pgUserPass = connUrl.Split("@")[0];
+                    var pgHostPortDb = connUrl.Split("@")[1];
+                    var pgHostPort = pgHostPortDb.Split("/")[0];
+                    var pgDb = pgHostPortDb.Split("/")[1];
+                    var pgUser = pgUserPass.Split(":")[0];
+                    var pgPass = pgUserPass.Split(":")[1];
+                    var pgHost = pgHostPort.Split(":")[0];
+                    var pgPort = pgHostPort.Split(":")[1];
+
+                    connStr = $"Server={pgHost};Port={pgPort};User Id={pgUser};Password={pgPass};Database={pgDb}; SSL Mode=Require; Trust Server Certificate=true";
+                }
+
+                options.UseNpgsql(connStr);
             });
 
             // Add MediatR
@@ -100,6 +128,10 @@ namespace API
             // app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            // Find files in wwwroot folder
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             
             app.UseCors("CorsPolicy");
 
@@ -110,6 +142,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

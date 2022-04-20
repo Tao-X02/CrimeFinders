@@ -11,7 +11,7 @@ const sleep = (delay: number) => {
 }
 
 // Default URL
-axios.defaults.baseURL = 'http://localhost:5000/api';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 // Axios interceptor
 axios.interceptors.response.use(async (response :  AxiosResponse<any, any>) => {
