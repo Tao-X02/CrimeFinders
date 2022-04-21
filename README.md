@@ -2,7 +2,7 @@
 
 An online platform to identify suspects, fugitives, and missing persons by submitting and matching anonymous tips.
 
-Developed with:
+**Developed with:**
   - **ASP.NET** (C#)
   - **PostgreSQL**
   - **Entity Framework**
