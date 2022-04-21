@@ -15,7 +15,7 @@ Developed with:
 
 **Demo Video:**
 
-**Note:** The quality is not optimal due to file compressions.
+The quality is not optimal due to file compressions.
 
 https://user-images.githubusercontent.com/68438230/164348103-0d9a112d-b95c-4bd3-ab9b-b498878fbbc0.mp4
 
@@ -31,7 +31,7 @@ docker run -p 8000:8000 flask-app
 
 Then, the app can be tried at this link: https://crime-finder.herokuapp.com
 
-# To test the development vesion
+# Test the development vesion
 (This may no longer be necessary)
 
 Some Docker files are incomplete. Follow these instructions:
@@ -40,7 +40,7 @@ Some Docker files are incomplete. Follow these instructions:
 docker run --name postgresql -e POSTGRES_USER=[user] -e POSTGRES_PASSWORD=[password] -p 5432:5432 -d postgres:latest
 ```
 
-2) The flask server can be easily run with the docker file. From the main directory:
+2) The flask server can be run with the docker file. From the main directory:
 ```
 cd flask-server
 docker build -t flask-app .
