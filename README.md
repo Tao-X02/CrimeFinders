@@ -6,41 +6,49 @@ Developed with:
   - **ASP.NET** (C#)
   - **PostgreSQL**
   - **Entity Framework**
+  - **Cloudinary** (Photo upload)
   - **React** (with Typescript)
   - **MobX**
   - **Material UI**
   - **Flask** (Python)
   - **Docker**
 
-# Demo Video
+**Demo Video:**
 
+**Note:** The quality is not optimal due to file compressions.
+
+https://user-images.githubusercontent.com/68438230/164348103-0d9a112d-b95c-4bd3-ab9b-b498878fbbc0.mp4
+
+# Run the app
+
+Deployment for one part of the app, the flask server, is still being worked on. But with a docker file, it can be run anywhere without bugs, albert some time for installation. From the main directory:
+
+```
+cd flask-server
+docker build -t flask-app .
+docker run -p 8000:8000 flask-app
+```
+
+Then, the app can be tried at this link: https://crime-finder.herokuapp.com
 
 # To test the development vesion
-**NOTE**: Deployments on cloud are being worked on. Will update once the app goes live. In addition, some Docker files are incomplete. Therefore follow these instructions:
+(This may no longer be necessary)
+
+Some Docker files are incomplete. Follow these instructions:
 1) Make sure that [docker](https://www.docker.com/) is installed on your computer. Then run the PostgreSQL database:
 ```
-docker run --name postgresql -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=secret -p 5432:5432 -d postgres:latest
+docker run --name postgresql -e POSTGRES_USER=[user] -e POSTGRES_PASSWORD=[password] -p 5432:5432 -d postgres:latest
 ```
 
-2) To run the .NET backend, install the latest version of [.NET 6](https://dotnet.microsoft.com/en-us/download) and run:
+2) The flask server can be easily run with the docker file. From the main directory:
+```
+cd flask-server
+docker build -t flask-app .
+docker run -p 8000:8000 flask-app
+```
+
+3) Since the React app can be run on the .NET kestrel server, install the latest version of [.NET 6](https://dotnet.microsoft.com/en-us/download) and run:
 ```
 cd API
 dotnet run
-```
-
-3) Make sure that Python is installed. From the base directory, go to the flask server and run:
-```
-cd flask-server
-source env/bin/activate // Sets up the virtual environment
-pip3 install -r requirements.txt // This may take a while
-```
-After installations are complete, run the app.py script:
-```
-python3 app.py
-```
-
-4) To run the React app, from the base directory
-```
-cd frontend
-yarn start
 ```
