@@ -31,6 +31,8 @@ docker run -p 8000:8000 flask-app
 
 Then, the app can be tried at this link: https://crime-finder.herokuapp.com
 
+(The flask app does not affect most featres of the project. Feel free to click the link anyway.)
+
 # Test the development vesion
 (This may no longer be necessary)
 
