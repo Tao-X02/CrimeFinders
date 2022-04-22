@@ -10,7 +10,9 @@ An online platform to identify suspects, fugitives, and missing persons by submi
   - **React** (with Typescript)
   - **MobX**
   - **Material UI**
-  - **Flask** (Python)
+  - **face_recognition** (Python library)
+  - **SpaCy**
+  - **Flask**
   - **Docker**
 
 **Demo Video:**
@@ -21,7 +23,7 @@ https://user-images.githubusercontent.com/68438230/164348103-0d9a112d-b95c-4bd3-
 
 # Run the app
 
-Deployment for one part of the app, the flask server, is still being worked on. But with a docker file, it can be run anywhere without bugs, albert some time for installation. From the main directory:
+Deployment for one part of the app, the flask server, is still being worked on. But with a docker file, it can be run anywhere without bugs; allow some time for installations. From the main directory:
 
 ```
 cd flask-server
@@ -31,7 +33,7 @@ docker run -p 8000:8000 flask-app
 
 Then, the app can be tried at this link: https://crime-finder.herokuapp.com
 
-(The flask app does not affect most featres of the project. Feel free to click the link anyway.)
+(The flask app does not affect most features of the project. Feel free to click the link anyway.)
 
 # Test the development vesion
 (This may no longer be necessary)
